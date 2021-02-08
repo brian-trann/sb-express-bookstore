@@ -1,18 +1,17 @@
-const db = require("../db");
-
+const db = require('../db');
 
 /** Collection of related methods for books. */
 
 class Book {
-  /** given an isbn, return book data with that isbn:
+	/** given an isbn, return book data with that isbn:
    *
    * => {isbn, amazon_url, author, language, pages, publisher, title, year}
    *
    **/
 
-  static async findOne(isbn) {
-    const bookRes = await db.query(
-        `SELECT isbn,
+	static async findOne(isbn) {
+		const bookRes = await db.query(
+			`SELECT isbn,
                 amazon_url,
                 author,
                 language,
@@ -21,25 +20,27 @@ class Book {
                 title,
                 year
             FROM books 
-            WHERE isbn = $1`, [isbn]);
+            WHERE isbn = $1`,
+			[ isbn ]
+		);
 
-    if (bookRes.rows.length === 0) {
-      throw { message: `There is no book with an isbn '${isbn}`, status: 404 }
-    }
+		if (bookRes.rows.length === 0) {
+			throw { message: `There is no book with an isbn '${isbn}`, status: 404 };
+		}
 
-    return bookRes.rows[0];
-  }
+		return bookRes.rows[0];
+	}
 
-  /** Return array of book data:
+	/** Return array of book data:
    *
    * => [ {isbn, amazon_url, author, language,
    *       pages, publisher, title, year}, ... ]
    *
    * */
 
-  static async findAll() {
-    const booksRes = await db.query(
-        `SELECT isbn,
+	static async findAll() {
+		const booksRes = await db.query(
+			`SELECT isbn,
                 amazon_url,
                 author,
                 language,
@@ -48,12 +49,13 @@ class Book {
                 title,
                 year
             FROM books 
-            ORDER BY title`);
+            ORDER BY title`
+		);
 
-    return booksRes.rows;
-  }
+		return booksRes.rows;
+	}
 
-  /** create book in database from data, return book data:
+	/** create book in database from data, return book data:
    *
    * {isbn, amazon_url, author, language, pages, publisher, title, year}
    *
@@ -61,9 +63,9 @@ class Book {
    *
    * */
 
-  static async create(data) {
-    const result = await db.query(
-      `INSERT INTO books (
+	static async create(data) {
+		const result = await db.query(
+			`INSERT INTO books (
             isbn,
             amazon_url,
             author,
@@ -81,22 +83,22 @@ class Book {
                    publisher,
                    title,
                    year`,
-      [
-        data.isbn,
-        data.amazon_url,
-        data.author,
-        data.language,
-        data.pages,
-        data.publisher,
-        data.title,
-        data.year
-      ]
-    );
+			[
+				data.isbn,
+				data.amazon_url,
+				data.author,
+				data.language,
+				data.pages,
+				data.publisher,
+				data.title,
+				data.year
+			]
+		);
 
-    return result.rows[0];
-  }
+		return result.rows[0];
+	}
 
-  /** Update data with matching ID to data, return updated book.
+	/** Update data with matching ID to data, return updated book.
 
    * {isbn, amazon_url, author, language, pages, publisher, title, year}
    *
@@ -104,9 +106,9 @@ class Book {
    *
    * */
 
-  static async update(isbn, data) {
-    const result = await db.query(
-      `UPDATE books SET 
+	static async update(isbn, data) {
+		const result = await db.query(
+			`UPDATE books SET 
             amazon_url=($1),
             author=($2),
             language=($3),
@@ -123,39 +125,30 @@ class Book {
                   publisher,
                   title,
                   year`,
-      [
-        data.amazon_url,
-        data.author,
-        data.language,
-        data.pages,
-        data.publisher,
-        data.title,
-        data.year,
-        isbn
-      ]
-    );
+			[ data.amazon_url, data.author, data.language, data.pages, data.publisher, data.title, data.year, isbn ]
+		);
 
-    if (result.rows.length === 0) {
-      throw { message: `There is no book with an isbn '${isbn}`, status: 404 }
-    }
+		if (result.rows.length === 0) {
+			throw { message: `There is no book with an isbn '${isbn}`, status: 404 };
+		}
 
-    return result.rows[0];
-  }
+		return result.rows[0];
+	}
 
-  /** remove book with matching isbn. Returns undefined. */
+	/** remove book with matching isbn. Returns undefined. */
 
-  static async remove(isbn) {
-    const result = await db.query(
-      `DELETE FROM books 
+	static async remove(isbn) {
+		const result = await db.query(
+			`DELETE FROM books 
          WHERE isbn = $1 
          RETURNING isbn`,
-        [isbn]);
+			[ isbn ]
+		);
 
-    if (result.rows.length === 0) {
-      throw { message: `There is no book with an isbn '${isbn}`, status: 404 }
-    }
-  }
+		if (result.rows.length === 0) {
+			throw { message: `There is no book with an isbn '${isbn}`, status: 404 };
+		}
+	}
 }
-
 
 module.exports = Book;
