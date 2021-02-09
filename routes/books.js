@@ -36,7 +36,7 @@ router.post('/', async function(req, res, next) {
 
 		if (!result.valid) {
 			const listOfErrors = result.errors.map((error) => error.stack);
-			const error = new ExpressError(listOfErrors, 404);
+			const error = new ExpressError(listOfErrors, 400);
 			return next(error);
 		}
 		const book = await Book.create(req.body);
@@ -53,6 +53,7 @@ router.put('/:isbn', async function(req, res, next) {
 		if ('isbn' in req.body) {
 			throw new ExpressError('Not allowed', 400);
 		}
+		const { isbn } = req.params;
 		const result = jsonschema.validate(req.body, updateBookSchema);
 		if (!result.valid) {
 			const listOfErrors = result.errors.map((error) => error.stack);

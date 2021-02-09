@@ -1,5 +1,4 @@
 /** Common config for bookstore. */
-require('dotenv').config();
 
 let DB_URI = `postgresql://`;
 const SECRET_KEY = process.env.SECRET_KEY || 'secret';
